@@ -40,7 +40,7 @@ jobs:
         run: terraform apply -auto-approve
       - name: Set S3 Bucket Env variable
         id: set_env
-        run: AWS_S3_BUCKET=$(terraform output --raw s3_bucket_name)
+        run: AWS_S3_BUCKET=$(terraform output --raw s3_bucket_name) >> $GITHUB_ENV
       - name: Setup AWS CLI
         uses: jakejarvis/s3-sync-action@master
     
