@@ -1,0 +1,46 @@
+name: 'Terraform'
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.1.7
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+      - name: Terraform Init
+        id: init
+        run: terraform init
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color
+        continue-on-error: true
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -auto-approve
+      - name: Setup AWS CLI
+        uses: jakejarvis/s3-sync-action@master
+      - name: Sync source code to S3 bucket
+        id: sync_s3
+        run: |
+          echo "Synching source code to S3 bucket..."
+          S3_BUCKET=$(terraform output --raw s3_bucket_name)
+          aws s3 sync ../code/ s3://$S3_BUCKET/
+          echo "Done"
+    
