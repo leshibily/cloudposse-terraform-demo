@@ -38,8 +38,15 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
-      - name: Set S3 Bucket Env variable
-        id: set_env
+      - name: 'Terraform Output'
+        id: terraform
+        uses: hashicorp/terraform-github-actions@master
+        with:
+          tf_actions_version: 1.1.7
+          tf_actions_subcommand: 'output'
+          tf_actions_working_dir: '.'
+      - name: Use Terraform Output
+        id: output
         run: |
           # apt-get install jq -y
           echo ${{ steps.terraform.outputs.tf_actions_output }}
