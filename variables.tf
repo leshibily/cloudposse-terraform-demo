@@ -5,7 +5,7 @@ variable "region" {
 }
 
 variable "website_domain_name" {
-  type = string
+  type        = string
   description = "Static website FQDN"
 }
 
@@ -32,11 +32,11 @@ variable "stage" {
 }
 
 variable "namespace" {
-  type = string
+  type        = string
   description = "ID element. Usually an abbreviation of your organization name, e.g. 'eg' or 'cp', to help ensure generated IDs are globally unique"
 }
 
 variable "route53_hosted_zone_id" {
-  type = string
+  type        = string
   description = "Route53 hosted zone id of the domain name."
 }

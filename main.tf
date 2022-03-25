@@ -57,13 +57,13 @@ resource "aws_s3_bucket_website_configuration" "this" {
 # }
 
 module "acm_request_certificate" {
-  source = "cloudposse/acm-request-certificate/aws"
-  version = "0.16.0"
+  source                            = "cloudposse/acm-request-certificate/aws"
+  version                           = "0.16.0"
   domain_name                       = var.website_domain_name
   process_domain_validation_options = true
   ttl                               = "300"
   subject_alternative_names         = ["*.${var.website_domain_name}"]
-  zone_id = var.route53_hosted_zone_id
+  zone_id                           = var.route53_hosted_zone_id
 }
 
 module "cdn" {
@@ -143,10 +143,10 @@ module "cdn" {
 }
 
 resource "aws_route53_record" "this" {
-  zone_id = var.route53_hosted_zone_id
-  name    = "www.${var.website_domain_name}"
-  type    = "CNAME"
-  ttl     = "60"
-  records = [module.cdn.cloudfront_distribution_domain_name]
+  zone_id    = var.route53_hosted_zone_id
+  name       = "www.${var.website_domain_name}"
+  type       = "CNAME"
+  ttl        = "60"
+  records    = [module.cdn.cloudfront_distribution_domain_name]
   depends_on = [module.cdn]
 }
