@@ -10,6 +10,7 @@ module "s3-bucket" {
   ignore_public_acls      = false
   enabled                 = true
   versioning_enabled      = false
+  force_destroy           = true
   name                    = var.website_domain_name
   stage                   = var.stage
   namespace               = var.namespace
