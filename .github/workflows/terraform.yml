@@ -45,12 +45,12 @@ jobs:
           tf_actions_version: 1.1.7
           tf_actions_subcommand: 'output'
           tf_actions_working_dir: '.'
-      - name: Use Terraform Output
+      - name: Set S3 Bucket Env
         id: set_env
         run: |
           apt-get install jq -y
           AWS_S3_BUCKET=$(echo ${{ steps.output.outputs.tf_actions_output }} | jq -r '.s3_bucket_name.value')
-          echo $AWS_S3_BUCKET >> $GITHUB_ENV
-      - name: Setup AWS CLI
+          echo "AWS_S3_BUCKET=$AWS_S3_BUCKET" >> $GITHUB_ENV
+      - name: Sync source code to S3 bucket
         uses: jakejarvis/s3-sync-action@master
     
