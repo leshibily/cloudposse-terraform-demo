@@ -5,6 +5,7 @@ on:
       - main
 
 env:
+  AWS_REGION: 'us-east-1'
   AWS_ACCESS_KEY_ID:  ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
@@ -19,6 +20,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.1.7
+          terraform_wrapper: true
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
@@ -38,19 +40,9 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
-      - name: Terraform Output
-        id: output
-        uses: hashicorp/terraform-github-actions@master
-        with:
-          tf_actions_version: 1.1.7
-          tf_actions_subcommand: 'output'
-          tf_actions_working_dir: '.'
-      - name: Set S3 Bucket Env
-        id: set_env
-        run: |
-          apt-get install jq -y
-          AWS_S3_BUCKET=$(echo ${{ steps.output.outputs.tf_actions_output }} | jq -r '.s3_bucket_name.value')
-          echo "AWS_S3_BUCKET=$AWS_S3_BUCKET" >> $GITHUB_ENV
       - name: Sync source code to S3 bucket
         uses: jakejarvis/s3-sync-action@master
+        env:
+          SOURCE_DIR: './src'
+        run: AWS_S3_BUCKET=$(terraform output --raw s3_bucket_name)
     
