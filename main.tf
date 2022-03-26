@@ -81,7 +81,7 @@ module "cdn" {
   is_ipv6_enabled     = true
   price_class         = "PriceClass_All"
   retain_on_delete    = false
-  wait_for_deployment = false
+  wait_for_deployment = true
 
   create_origin_access_identity = true
   origin_access_identities = {
