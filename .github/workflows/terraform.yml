@@ -20,7 +20,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.1.7
-          terraform_wrapper: true
+          terraform_wrapper: false
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
@@ -40,17 +40,10 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
-      - name: Set env
-        run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
-      - name: Test
-        run: echo $GITHUB_SHA_SHORT
-      # - name: Set S3 bucket Env
-      #   id: set_env
-      #   run: |
-      #     AWS_S3_BUCKET=$(terraform output --raw s3_bucket_name)
-      #     echo $AWS_S3_BUCKET
-      #     echo "AWS_S3_BUCKET=$AWS_S3_BUCKET" >> $GITHUB_ENV
-      # - name: Sync source code to S3 bucket
-      #   uses: jakejarvis/s3-sync-action@master
-      #   env:
-      #     SOURCE_DIR: './src'
+      - name: Set S3 bucket Env
+        id: set_env
+        run: echo "AWS_S3_BUCKET=$(terraform output --raw s3_bucket_name)" >> $GITHUB_ENV
+      - name: Sync source code to S3 bucket
+        uses: jakejarvis/s3-sync-action@master
+        env:
+          SOURCE_DIR: './src'
