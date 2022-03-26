@@ -8,6 +8,7 @@ env:
   AWS_REGION: 'us-east-1'
   AWS_ACCESS_KEY_ID:  ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
 
 jobs:
   terraform:
@@ -47,3 +48,8 @@ jobs:
         uses: jakejarvis/s3-sync-action@master
         env:
           SOURCE_DIR: './src'
+      - name: Smoke test
+        id: smoke_test
+        run: |
+          STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://$DOMAIN_NAME)
+          if [ "$STATUS_CODE" -ne 200 ]; then exit 1 ; fi
