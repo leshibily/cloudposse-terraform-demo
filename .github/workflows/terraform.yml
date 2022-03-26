@@ -40,9 +40,9 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
+      - name: Set S3 bucket Env
+        run: echo "AWS_S3_BUCKET=$(terraform output --raw s3_bucket_name)" >> $GITHUB_ENV
       - name: Sync source code to S3 bucket
         uses: jakejarvis/s3-sync-action@master
         env:
           SOURCE_DIR: './src'
-        run: AWS_S3_BUCKET=$(terraform output --raw s3_bucket_name)
-    
