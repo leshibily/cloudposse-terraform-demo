@@ -37,6 +37,7 @@ resource "aws_s3_bucket_website_configuration" "this" {
 }
 
 ###
+# facing hashicorp/aws version error when using the cloudfront-s3-cdn.
 # version error: Could not retrieve the list of available versions for provider hashicorp/aws: locked provider registry.terraform.io/hashicorp/aws 4.4.0 does not match
 # configured version constraint >= 2.0.0, >= 3.0.0, >= 3.64.0, < 4.0.0, >= 4.2.0, ~> 4.4.0; must use terraform init -upgrade to allow selection of new
 # versions
@@ -65,8 +66,11 @@ module "acm_request_certificate" {
   ttl                               = "300"
   subject_alternative_names         = ["*.${var.website_domain_name}"]
   zone_id                           = var.route53_hosted_zone_id
+  wait_for_certificate_issued       = true
 }
 
+# using terraform-aws-modules/cloudfront module instead of
+# cloudposse/cloudfront-s3-cdn because it's provider verions are outdated.
 module "cdn" {
   source = "terraform-aws-modules/cloudfront/aws"
 
