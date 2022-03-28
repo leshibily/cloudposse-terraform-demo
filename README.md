@@ -4,19 +4,8 @@ Terraform script to deploy a static website using Cloudposse S3 and Cloudfront m
 
 ## Prerequisites
 1. Install Terraform v1.1.7.
-2. Create a terraform.tfvars file in the root directory. Example below.
-
-## Variables
-
-Below is an example `terraform.tfvars` file that you can use in your deployments:
-
-```ini
-region                 = "us-east-1"
-website_domain_name    = "cloudposse-demo.xyz"
-stage                  = "demo"
-namespace              = "cp"
-route53_hosted_zone_id = "Z040409836SNWYFDUNQ8R"
-```
+2. Configure AWS credentials in the Github secrets (AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY)
+3. Start Github action and provide necessary inputs.
 
 ## Usage
 

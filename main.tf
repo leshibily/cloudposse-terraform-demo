@@ -37,7 +37,7 @@ resource "aws_s3_bucket_website_configuration" "this" {
 }
 
 ###
-# facing hashicorp/aws version error when using the cloudfront-s3-cdn.
+# facing hashicorp/aws version error when using the cloudfront-s3-cdn terraform module. Error below.
 # version error: Could not retrieve the list of available versions for provider hashicorp/aws: locked provider registry.terraform.io/hashicorp/aws 4.4.0 does not match
 # configured version constraint >= 2.0.0, >= 3.0.0, >= 3.64.0, < 4.0.0, >= 4.2.0, ~> 4.4.0; must use terraform init -upgrade to allow selection of new
 # versions
@@ -51,11 +51,6 @@ resource "aws_s3_bucket_website_configuration" "this" {
 #   aliases = ["cloudposse-demo.xyz"]
 #   parent_zone_id = "Z07973632MBUD2XUK6IJW"
 #   depends_on = [module.s3-bucket]
-# }
-
-# resource aws_route53_zone "this" {
-#   name = var.website_domain_name
-#   comment = "Static website"
 # }
 
 module "acm_request_certificate" {
